@@ -6,48 +6,62 @@ export class Ruta {
         let aux = this.primero;
         
         if (aux){
-            if(aux.siguiente == this.primero){
-                aux.siguiente = nuevo;
-                nuevo.siguiente = aux;
-            }else{
-                while(aux.siguiente != this.primero){
-                    aux = aux.siguiente;
-                }
-                aux.siguiente = nuevo;
-                nuevo.siguiente = this.primero;
-            }
+            nuevo.anterior = aux.anterior;
+            aux.anterior.siguiente = nuevo;
+            aux.anterior = nuevo;
+            nuevo.siguiente = aux;
         }else{
-            this.primero = nuevo;
             nuevo.siguiente = nuevo;
+            nuevo.anterior = nuevo;
+            this.primero = nuevo;
         }
     }
     buscar(nombreBase){
         let aux = this.primero;
         if(aux){
-            while(aux != null && aux.nombre != nombreBase ){
+            while(aux.siguiente != this.primero && aux.nombre != nombreBase ){
                 aux = aux.siguiente;
             }
         }
-        return aux;
+        return aux.nombre == nombreBase ? aux : null;
     }
     eliminar(nombreBase){
         let aux = this.primero;
         if(aux){
-            if(aux.nombre == nombreBase && aux.siguiente == aux )
-                this.primero = null;
-            else{
-                if(aux.nombre == nombreBase && aux.siguiente.siguiente == aux){
+            if(aux.nombre == nombreBase){
+                if(aux.siguiente == this.primero)
+                    this.primero = null;
+                else {
                     this.primero = aux.siguiente;
-                    aux.siguiente = this.primero;
-                }
-                else{
-                    while(aux.siguiente != this.primero && aux.siguiente.nombre != nombreBase ){
-                        aux = aux.siguiente;
-                    }
-                    if(aux.siguiente.nombre == nombreBase)
-                        aux.siguiente = aux.siguiente.siguiente;
+                    aux.anterior.siguiente = aux.siguiente;
+                    aux.siguiente.anterior = aux.anterior;
                 }
             }
+            else{
+                    while(aux.siguiente != this.primero && aux.nombre != nombreBase ){
+                        aux = aux.siguiente;
+                    }
+                    if(aux.nombre == nombreBase){
+                        aux.anterior.siguiente = aux.siguiente;
+                        aux.siguiente.anterior = aux.anterior;
+                    }
+            }
+        }
+    }
+    agregarInicio(nuevo){
+        let aux = this.primero;
+
+        if (aux){
+            aux.siguiente.anterior = nuevo;
+            nuevo.siguiente = aux.siguiente;
+            nuevo.anterior = aux;
+            aux.siguiente = nuevo;
+            this.primero = aux.siguiente;
+
+        }else{
+            this.primero = nuevo;
+            nuevo.siguiente = nuevo;
+            nuevo.anterior = nuevo;
         }
     }
     listar(){
@@ -66,8 +80,19 @@ export class Ruta {
         }
         return resultado;
     }
-    crearRujta(){
-
+    crearRuta(baseInicio, minutosTrabajados){
+        let aux = this.buscar(baseInicio);
+        let texto = '';
+        let minutosAcumulados = null;
+        if(aux){
+           while (minutosTrabajados > 0){
+                aux = aux.siguiente;
+                minutosTrabajados -= aux.minutos;
+                minutosAcumulados += aux.minutos;
+                texto += `Base: ${aux.nombre} Minutos acumulados: ${minutosAcumulados} \n`;
+            }
+        }
+        return texto;
     }
 
 }
