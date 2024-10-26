@@ -38,13 +38,13 @@ export class Ruta {
                 }
             }
             else{
-                    while(aux.siguiente != this.primero && aux.nombre != nombreBase ){
+                while(aux.siguiente != this.primero && aux.nombre != nombreBase ){
                         aux = aux.siguiente;
-                    }
-                    if(aux.nombre == nombreBase){
+                }
+                if(aux.nombre == nombreBase){
                         aux.anterior.siguiente = aux.siguiente;
                         aux.siguiente.anterior = aux.anterior;
-                    }
+                }
             }
         }
     }
@@ -85,7 +85,7 @@ export class Ruta {
         let texto = '';
         let minutosAcumulados = null;
         if(aux){
-           while (minutosTrabajados > 0){
+           while (minutosTrabajados - aux.siguiente.minutos > 0){
                 aux = aux.siguiente;
                 minutosTrabajados -= aux.minutos;
                 minutosAcumulados += aux.minutos;
